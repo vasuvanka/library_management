@@ -1,6 +1,9 @@
 package routes
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/vasuvanka/library_management/backend/config"
 	"github.com/vasuvanka/library_management/backend/services"
@@ -26,5 +29,6 @@ func (server *Server) Init() error {
 }
 
 func (server *Server) Bootstrap() error {
-	return server.App.Listen(server.Config.Port)
+	log.Println("Server listening on PORT : "+ server.Config.Port)
+	return server.App.Listen(fmt.Sprintf(":%s",server.Config.Port))
 }
