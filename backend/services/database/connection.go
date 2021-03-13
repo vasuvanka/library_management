@@ -1,21 +1,17 @@
 package database
 
 import (
-	"time"
-
-	"github.com/globalsign/mgo"
 	"github.com/vasuvanka/library_management/backend/services/database/collections"
 )
 
 type Database struct {
-	collections.Mongo
+	Db *collections.Mongo
 }
 
-func (database *Database) Connect(URI string) error  {
-	session, err := mgo.DialWithTimeout(URI,time.Second*10)
-	if err != nil {
-		return err
+func NewDatabase() *Database {
+	return &Database{
+		Db: collections.NewMongo(),	
 	}
-	database.Mongo.Session = *session.Clone()
-	return nil
 }
+
+

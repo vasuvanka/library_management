@@ -1,6 +1,8 @@
 package collections
 
 import (
+	"time"
+
 	"github.com/globalsign/mgo"
 	"github.com/vasuvanka/library_management/backend/constants"
 )
@@ -8,6 +10,19 @@ import (
 //Mongo - mongo struct
 type Mongo struct {
 	Session mgo.Session
+}
+
+func NewMongo() *Mongo {
+	return &Mongo{}
+}
+
+func (mongo *Mongo) Connect(URI string) error {
+	session, err := mgo.DialWithTimeout(URI,time.Second*10)
+	if err != nil {
+		return err
+	}
+	mongo.Session = *session.Clone()
+	return nil
 }
 
 func (mongo *Mongo) Books() *mgo.Collection {
@@ -20,10 +35,10 @@ func (mongo *Mongo) Users() *mgo.Collection {
 
 func (mongo *Mongo) Index() error  {
 	idx := mgo.Index{
-		Key:      []string{"email"},
+		Key:      []string{"username"},
 		Unique:   true,
 		DropDups: true,
-		Name:     "user_email_index",
+		Name:     "username_index",
 	}
 	// user indexes
 	if err := mongo.Users().EnsureIndex(idx); err != nil {
@@ -31,8 +46,8 @@ func (mongo *Mongo) Index() error  {
 	}
 
 	idx = mgo.Index{
-		Key:  []string{"removed", "name"},
-		Name: "user_name_index",
+		Key:  []string{"books"},
+		Name: "user_books_index",
 	}
 	// user indexes
 	if err := mongo.Users().EnsureIndex(idx); err != nil {
@@ -40,8 +55,8 @@ func (mongo *Mongo) Index() error  {
 	}
 
 	idx = mgo.Index{
-		Key:  []string{"removed", "name","available"},
-		Name: "books_name_available_index",
+		Key:  []string{"name","author","count"},
+		Name: "books_name_count_index",
 	}
 
 	return mongo.Books().EnsureIndex(idx)
