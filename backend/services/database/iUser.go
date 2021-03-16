@@ -7,5 +7,7 @@ type IUser interface {
 	GetUserByUsername(username string) (dbmodels.User,error)
 	CreateUser(user dbmodels.User) (dbmodels.User,error)
 	UpdateUser(user dbmodels.User) error
+	DeleteUser(id string) error
 	UserExist(username string) (bool, error)
+	DeleteAllUsers() error
 }

@@ -5,9 +5,9 @@ import (
 )
 
 type User struct {
-	Username string `bson:"username"`
-	ID bson.ObjectId `bson:"_id"`
-	FirstName string `bson:"firstname"`
-	LastName string `bson:"lastname"`
-	Books []bson.ObjectId `bson:"books"`
+	Username string `bson:"username" json:"username"`
+	ID bson.ObjectId `bson:"_id" json:"id"`
+	FirstName string `bson:"firstname" json:"firstname"`
+	LastName string `bson:"lastname,omitempty" json:"lastname,omitempty"`
+	Books []Book `bson:"books,omitempty" json:"books,omitempty"`
 }

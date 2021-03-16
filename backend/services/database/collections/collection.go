@@ -9,11 +9,13 @@ import (
 
 //Mongo - mongo struct
 type Mongo struct {
-	Session mgo.Session
+	Session *mgo.Session
 }
 
 func NewMongo() *Mongo {
-	return &Mongo{}
+	return &Mongo{
+		Session: nil,
+	}
 }
 
 func (mongo *Mongo) Connect(URI string) error {
@@ -21,7 +23,7 @@ func (mongo *Mongo) Connect(URI string) error {
 	if err != nil {
 		return err
 	}
-	mongo.Session = *session.Clone()
+	mongo.Session = session.Clone()
 	return nil
 }
 

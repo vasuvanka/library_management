@@ -37,9 +37,23 @@ func TestServerInit(t *testing.T){
 
 func TestServerBootstrap(t *testing.T){
 	conf := config.NewConfig()
+	err := conf.Init()
+	if err != nil {
+		t.Errorf("Expected nil but got %s",err.Error())
+	}
 	server := routes.NewServer(conf)
+	err = server.Init()
 
-	err := server.Bootstrap()
+	if err != nil {
+		t.Errorf("Expected nil but got %s",err.Error())
+	}
+	err = server.Bootstrap()
+
+	if err != nil {
+		t.Errorf("Expected nil but got %s",err.Error())
+	}
+
+	err = server.Shutdown()
 
 	if err != nil {
 		t.Errorf("Expected nil but got %s",err.Error())

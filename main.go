@@ -19,6 +19,9 @@ func main(){
 	if err := server.Init(); err != nil {
 		log.Fatal(err)
 	}
+
+	server.Controllers()
+	server.Routes()
 	
 	if err := server.Bootstrap(); err != nil {
 		log.Fatal(err)

@@ -8,102 +8,107 @@ import (
 	"github.com/vasuvanka/library_management/backend/services/database/collections"
 )
 
-func TestGetUserByID(t *testing.T){
+func TestGetBookByID(t *testing.T)  {
 	mongo := collections.NewMongo()
 	err := mongo.Connect("mongodb://localhost:27017/test")
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
-	_, err = mongo.GetUserByID(bson.NewObjectId().Hex())
+	_, err = mongo.GetBookByID(bson.NewObjectId().Hex())
 	if err != nil && err.Error() != "not found" {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
 }
 
-func TestGetUserByUsername(t *testing.T){
+func TestGetBooks(t *testing.T)  {
 	mongo := collections.NewMongo()
 	err := mongo.Connect("mongodb://localhost:27017/test")
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
-	_, err = mongo.GetUserByUsername("test")
-	if err != nil && err.Error() != "not found" {
-		t.Errorf("Expected nil but got %s", err.Error())
-	}
-}
-
-func TestUserExist(t *testing.T){
-	mongo := collections.NewMongo()
-	err := mongo.Connect("mongodb://localhost:27017/test")
-	if err != nil {
-		t.Errorf("Expected nil but got %s", err.Error())
-	}
-	_, err = mongo.UserExist("test")
-	if err != nil && err.Error() != "not found" {
-		t.Errorf("Expected nil but got %s", err.Error())
-	}
-}
-
-func TestCreateUser(t *testing.T){
-	mongo := collections.NewMongo()
-	err := mongo.Connect("mongodb://localhost:27017/test")
-	if err != nil {
-		t.Errorf("Expected nil but got %s", err.Error())
-	}
-	_ = mongo.DeleteAllUsers()
-	var user dbmodels.User
-	user.FirstName = "first"
-	user.LastName = "last"
-	user.Username = "test"
-	_, err = mongo.CreateUser(user)
+	_, err = mongo.GetBooks(bson.M{},0,5)
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
 }
 
-func TestUpdateUser(t *testing.T){
+func TestCreateBook(t *testing.T)  {
 	mongo := collections.NewMongo()
 	err := mongo.Connect("mongodb://localhost:27017/test")
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
-	_ = mongo.DeleteAllUsers()
-	var user dbmodels.User
-	user.FirstName = "first"
-	user.LastName = "last"
-	user.Username = "test"
-	dbuser, err := mongo.CreateUser(user)
-	if err != nil {
-		t.Errorf("Expected nil but got %s", err.Error())
-	}
-	dbuser.FirstName = "first name"
-	err = mongo.UpdateUser(dbuser)
+	var book dbmodels.Book
+	book.Author = "test"
+	book.Copies=2
+	book.Name="Test Book"
+	_, err = mongo.CreateBook(book)
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
 }
 
-
-func TestDeleteAllUsers(t *testing.T){
+func TestUpdateBook(t *testing.T)  {
 	mongo := collections.NewMongo()
 	err := mongo.Connect("mongodb://localhost:27017/test")
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
-	_ = mongo.DeleteAllUsers()
-	var user dbmodels.User
-	user.FirstName = "first"
-	user.LastName = "last"
-	user.Username = "test"
-	dbuser, err := mongo.CreateUser(user)
+	var book dbmodels.Book
+	book.Author = "test"
+	book.Copies=2
+	book.Name="Test Book"
+	dbBook, err := mongo.CreateBook(book)
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
-	err = mongo.DeleteAllUsers()
+	dbBook.Copies = 3
+	err = mongo.UpdateBook(dbBook)
 	if err != nil {
 		t.Errorf("Expected nil but got %s", err.Error())
 	}
-	_,err = mongo.GetUserByID(dbuser.ID.Hex())
+}
+
+func TestDeleteBook(t *testing.T)  {
+	mongo := collections.NewMongo()
+	err := mongo.Connect("mongodb://localhost:27017/test")
+	if err != nil {
+		t.Errorf("Expected nil but got %s", err.Error())
+	}
+	var book dbmodels.Book
+	book.Author = "test"
+	book.Copies=2
+	book.Name="Test Book"
+	dbBook, err := mongo.CreateBook(book)
+	if err != nil {
+		t.Errorf("Expected nil but got %s", err.Error())
+	}
+	err = mongo.DeleteBook(dbBook.ID.Hex())
+	if err != nil {
+		t.Errorf("Expected nil but got %s", err.Error())
+	}
+}
+
+func TestDeleteAllBooks(t *testing.T)  {
+	mongo := collections.NewMongo()
+	err := mongo.Connect("mongodb://localhost:27017/test")
+	if err != nil {
+		t.Errorf("Expected nil but got %s", err.Error())
+	}
+	var book dbmodels.Book
+	book.Author = "test"
+	book.Copies=2
+	book.Name="Test Book"
+	dbBook, err := mongo.CreateBook(book)
+	if err != nil {
+		t.Errorf("Expected nil but got %s", err.Error())
+	}
+	err = mongo.DeleteAllBooks()
+	if err != nil {
+		t.Errorf("Expected nil but got %s", err.Error())
+	}
+
+	_, err = mongo.GetBookByID(dbBook.ID.Hex())
 	if err != nil && err.Error() != "not found" {
 		t.Errorf("Expected not found but got %s", err.Error())
 	}

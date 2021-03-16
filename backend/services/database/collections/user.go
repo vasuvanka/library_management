@@ -1,6 +1,8 @@
 package collections
 
 import (
+	"fmt"
+
 	"github.com/globalsign/mgo/bson"
 	"github.com/vasuvanka/library_management/backend/models/dbmodels"
 )
@@ -26,7 +28,7 @@ func (db *Mongo) UserExist(username string) (bool,error) {
 	if err != nil {
 		return false, err
 	}
-	return count>0, err
+	return count>=1, err
 }
 
 func (db *Mongo) CreateUser(user dbmodels.User) (dbmodels.User,error) {
@@ -37,4 +39,14 @@ func (db *Mongo) CreateUser(user dbmodels.User) (dbmodels.User,error) {
 
 func (db *Mongo) UpdateUser(user dbmodels.User) error {
 	return db.Users().UpdateId(user.ID,user)
+}
+
+func (db *Mongo) DeleteUser(id string) error {
+	return db.Users().RemoveId(id)
+}
+
+func (db *Mongo) DeleteAllUsers() error {
+	info, err := db.Users().RemoveAll(bson.M{})
+	fmt.Println(info)
+	return err
 }

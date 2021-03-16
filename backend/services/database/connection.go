@@ -10,7 +10,7 @@ type Database struct {
 
 func NewDatabase() *Database {
 	return &Database{
-		Db: collections.NewMongo(),	
+		Db: nil,	
 	}
 }
 
